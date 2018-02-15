@@ -98,10 +98,13 @@ int main(int argc, char **argv, char **env) {
     rom = (unsigned int *) malloc(ROMSIZE);
     FILE *fin = fopen("../mips_mem.bin", "rb");
     if (fin == NULL) {
+        printf("Unable to read 'mips_mem.bin'\n");
         free(rom);
         return 1;
     }
     printf("Read %lu bytes from file\n", fread(rom, 4, ROMSIZE/4, fin));
+    fclose(fin);
+
     ram = (unsigned int *) calloc(RAMSIZE, 1);
     for (int i = 0; i < 256; i++) {
         ram[(0x1000 >> 2) + i] = img[i];
