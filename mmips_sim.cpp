@@ -233,9 +233,7 @@ int main(int argc, char **argv, char **env) {
         unsigned int value = ram[(0x2000 >> 2) + i];
         for (int j = 0; j < 4; j++) {
             unsigned char b = (value >> ((3-j)*8)) & 0xff;
-            char color[64] = {0};
-            snprintf(color, 64, "\x1b[48;2;%hhu;%hhu;%hhum\x1b[38;2;%hhu;%hhu;%hhum", b, b, b, b, b, b);
-            printf("%s%.2x", color, b);
+            printf("\x1b[48;2;%hhu;%hhu;%hhu;38;2;%hhu;%hhu;%hhum%.2x", b, b, b, b, b, b, b);
         }
         if (i % 8 == 7) printf("\x1b[0m\n");
     }
