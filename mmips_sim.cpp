@@ -124,8 +124,8 @@ int main(int argc, char **argv, char **env) {
     mmips->enable = 1;
     mmips->eval();
 
-    int rom_addr = 0x00000000;
-    int rom_r = 0;
+    unsigned int rom_addr = 0;
+    unsigned int rom_r = 0;
 
     printf("Reset mMIPS\n");
     mmips->rst = 1;
@@ -151,17 +151,17 @@ int main(int argc, char **argv, char **env) {
     tfp->dump(100);
 #endif
 
-    int ram_addr = 0;
-    int ram_lblw = 0;
-    int ram_r = 0;
-    int ram_w = 0;
-    int ram_byteselect_before = 0;
-    int ram_byteselect = 0;
-    int ram_din = 0;
-    int ram_we = 0;
+    unsigned int ram_addr = 0;
+    unsigned int ram_lblw = 0;
+    unsigned int ram_r = 0;
+    unsigned int ram_w = 0;
+    unsigned int ram_byteselect_before = 0;
+    unsigned int ram_byteselect = 0;
+    unsigned int ram_din = 0;
+    unsigned int ram_we = 0;
 
     printf("Running mMIPS\n");
-    int clock = 0;
+    unsigned int clock = 0;
     while (mmips->mMIPS__DOT__bus_pc != 0x44) {
         printf("\r>> %9d cycles", ++clock);
 
@@ -211,7 +211,6 @@ int main(int argc, char **argv, char **env) {
 #endif
 
         /* Falling edge */
-        mmips->clk = 0;
         if (rom_r) {
             assert(rom_addr < ROMSIZE);
             mmips->rom_dout = bswap(rom[rom_addr >> 2]);
@@ -221,6 +220,7 @@ int main(int argc, char **argv, char **env) {
             ram[ram_addr >> 2] = (ram[ram_addr >> 2] & ram_we) | (ram_din & ~ram_we);
         }
 
+        mmips->clk = 0;
         mmips->eval();
 #ifdef TRACE
         tfp->dump(clock*100 + 100);
@@ -237,12 +237,17 @@ int main(int argc, char **argv, char **env) {
         }
         if (i % 8 == 7) printf("\x1b[0m\n");
     }
+    bool identical = true;
     for (int i = 0; i < 256; i++) {
         unsigned int value = ram[(0x2000 >> 2) + i];
         unsigned int ref_value = ref_out[i];
         if (value != ref_value) {
             printf("Output mismatch at %.6x, expected %.8x got %.8x\n", 0x402000 + i, ref_value, value);
+            identical = false;
         }
+    }
+    if (identical) {
+        printf("Output is identical to reference\n");
     }
 
 #ifdef TRACE
