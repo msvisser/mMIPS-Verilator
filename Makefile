@@ -11,7 +11,7 @@ clean_exe:
 
 verilator:
 	rm -rf obj_dir
-	verilator -Wall \
+	verilator -Wall -Wno-fatal \
 		--exe mmips_sim.cpp --trace -Iverilog --cc mmips.v -v \
 		add.v alu.v aluctrl.v branch_ctrl.v ctrl.v decoder.v \
 		hazard.v hazard_ctrl.v imm2word.v memdev.v mmips_defines.v \
