@@ -102,7 +102,7 @@ int main(int argc, char **argv, char **env) {
         free(rom);
         return 1;
     }
-    printf("Read %lu bytes from file\n", fread(rom, 4, ROMSIZE/4, fin));
+    printf("Read %lu bytes from file\n", fread(rom, 1, ROMSIZE, fin));
     fclose(fin);
 
     ram = (unsigned int *) calloc(RAMSIZE, 1);
