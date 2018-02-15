@@ -1,0 +1,4 @@
+verilog/
+obj_dir/
+*.vcd
+mips_mem.bin
