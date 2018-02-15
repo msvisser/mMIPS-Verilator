@@ -3,7 +3,9 @@
 
 #include "Vmmips.h"
 #include "verilated.h"
+#ifdef TRACE
 #include "verilated_vcd_c.h"
+#endif
 
 #define ROMSIZE (2048*64)
 #define RAMSIZE (2048*64)
