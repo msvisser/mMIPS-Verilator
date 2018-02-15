@@ -231,9 +231,15 @@ int main(int argc, char **argv, char **env) {
 
     for (int i = 0; i < 256; i++) {
         unsigned int value = ram[(0x2000 >> 2) + i];
+        unsigned int ref_value = ref_out[i];
         for (int j = 0; j < 4; j++) {
             unsigned char b = (value >> ((3-j)*8)) & 0xff;
-            printf("\x1b[48;2;%hhu;%hhu;%hhu;38;2;%hhu;%hhu;%hhum%.2x", b, b, b, b, b, b, b);
+            unsigned char r = (ref_value >> ((3-j)*8)) & 0xff;
+            if (b == r) {
+                printf("\x1b[48;2;%1$u;%1$u;%1$u;38;2;%1$u;%1$u;%1$um%1$.2x", b);
+            } else {
+                printf("\x1b[48;2;%1$u;%1$u;%1$u;38;2;%2$u;%3$u;%3$um%1$.2x", b, 255, 0);
+            }
         }
         if (i % 8 == 7) printf("\x1b[0m\n");
     }
